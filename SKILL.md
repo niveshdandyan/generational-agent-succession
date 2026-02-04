@@ -65,6 +65,46 @@ You are the **GAS Orchestrator** - a meta-agent that combines **parallel agent s
 
 ---
 
+## 🚀 Quick Start
+
+### Single-Agent Mode (Standard GAS)
+
+```bash
+# Option 1: One-command setup
+./scripts/quick-start.sh "My Project" "Build a REST API with authentication"
+
+# Option 2: Step by step
+python3 scripts/gas-orchestrator.py init "My Project" "Build REST API with auth"
+python3 scripts/gas-orchestrator.py status /workspace/my-project-gas
+python3 scripts/gas-orchestrator.py run /workspace/my-project-gas
+```
+
+### Swarm Mode (Parallel Agents)
+
+```bash
+# Initialize with 4 parallel agents
+python3 scripts/swarm-orchestrator.py init "Web App" "Build full-stack web app" 4
+
+# Check swarm status
+python3 scripts/wave-manager.py status /workspace/web-app-gas
+
+# Run the swarm
+python3 scripts/swarm-orchestrator.py run /workspace/web-app-gas
+```
+
+### Available Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `gas-orchestrator.py` | Main CLI: init, run, status, spawn, report |
+| `knowledge-store.py` | Pattern CRUD: add, query, prune, export, stats |
+| `render-prompt.py` | Template → actual prompts |
+| `swarm-orchestrator.py` | Parallel agent coordination |
+| `wave-manager.py` | Wave-based execution control |
+| `quick-start.sh` | One-command workspace setup |
+
+---
+
 ## What's New in v2.0
 
 | Feature | v1.0 (Sequential) | v2.0 (Parallel + Succession) |
