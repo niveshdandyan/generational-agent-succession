@@ -1,0 +1,223 @@
+# Generational Agent Succession Configuration v2.0
+# ================================================
+# Parallel Agent Swarms + Per-Agent Succession
+
+# Project defaults
+defaults:
+  workspace_base: /workspace
+  max_generations_per_agent: 10
+  max_total_generations: 50
+  min_generation_duration_minutes: 5
+  max_total_duration_hours: 4
+
+# Swarm Configuration (from agent-architect)
+swarm:
+  # Maximum agents per wave
+  max_agents_per_wave: 8
+
+  # Maximum total agents
+  max_total_agents: 12
+
+  # Minimum agents to enable swarm mode
+  min_agents_for_swarm: 2
+
+  # Wave execution settings
+  waves:
+    auto_advance: true
+    wait_for_all: true  # Wait for all agents in wave before advancing
+    partial_advance_threshold: 0.80  # Advance if 80% complete and others stalled
+
+# Succession Triggers
+# Each trigger contributes to a weighted score
+# Succession occurs when composite score > 0.70
+triggers:
+  # Number of interactions before considering succession
+  interaction_limit:
+    enabled: true
+    threshold: 150
+    weight: 0.25
+
+  # Self-reported confidence level
+  confidence_threshold:
+    enabled: true
+    threshold: 0.70
+    weight: 0.30
+
+  # Error rate (errors / total actions)
+  error_rate:
+    enabled: true
+    threshold: 0.15
+    weight: 0.25
+
+  # Minutes without progress update
+  stall_timeout:
+    enabled: true
+    threshold_minutes: 10
+    weight: 0.20
+
+  # Composite trigger threshold
+  composite:
+    spawn_threshold: 0.70
+    warning_threshold: 0.50
+
+# Knowledge Transfer Configuration
+transfer:
+  # Maximum tokens in transfer document
+  max_tokens: 3000
+
+  # Target compression ratio (final / original)
+  compression_ratio: 0.15
+
+  # What to include in transfer
+  include:
+    task_state: true
+    completed_work: true
+    working_memory: true
+    success_patterns: true
+    anti_patterns: true
+    domain_knowledge: true
+    conversation_summary: true
+
+  # Priority tiers for compression
+  tiers:
+    critical:
+      - task_state
+      - blockers
+      - active_files
+    important:
+      - key_decisions
+      - next_steps
+      - success_patterns
+    context:
+      - conversation_summary
+      - domain_insights
+    ephemeral:
+      - raw_logs
+      - exploration_history
+
+# Knowledge Store Configuration
+knowledge_store:
+  # Where to persist knowledge
+  path: knowledge/store.json
+
+  # Pattern management
+  patterns:
+    max_success_patterns: 50
+    max_anti_patterns: 25
+    min_confidence: 0.60
+    promotion_threshold: 3  # occurrences before promoting
+    decay_rate: 0.10  # per generation without use
+
+  # Retrieval settings
+  retrieval:
+    top_k: 5
+    min_similarity: 0.70
+
+# Dashboard Configuration
+dashboard:
+  enabled: true
+  port: 8080
+  refresh_interval_ms: 2000
+  auto_export_port: true
+  # v2: Show wave-based organization
+  show_waves: true
+  show_agent_generations: true
+  show_succession_timeline: true
+
+# Monitoring Configuration
+monitoring:
+  # How often to check generation status
+  poll_interval_seconds: 30
+
+  # Status file location within generation directory
+  status_file: status.json
+
+  # Progress tracking
+  track_interactions: true
+  track_errors: true
+  track_confidence: true
+
+# Logging Configuration
+logging:
+  level: INFO
+  file: /tmp/gas.log
+  include_timestamps: true
+
+# Safety Limits
+safety:
+  # Hard cap on generations per agent
+  max_generations_per_agent: 10
+
+  # Hard cap on total generations across all agents
+  max_total_generations: 50
+
+  # Maximum retry attempts for failed spawns
+  max_spawn_retries: 3
+
+  # Minimum time before succession allowed
+  min_generation_duration_minutes: 5
+
+  # Emergency handoff if critically degraded
+  emergency_threshold: 0.95
+
+  # Abort task if too many consecutive failures
+  max_consecutive_failures: 3
+
+  # Swarm-wide abort threshold
+  swarm_failure_threshold: 0.50  # Abort if 50%+ agents fail
+
+# Agent Role Templates (from agent-architect)
+agent_roles:
+  - id: core-architect
+    name: Core Architect
+    description: Foundation, config, shared types
+    wave: 1
+    typical_tasks:
+      - Project structure
+      - Configuration files
+      - Shared interfaces
+
+  - id: backend-engineer
+    name: Backend Engineer
+    description: API, database, server logic
+    wave: 2
+    typical_tasks:
+      - API endpoints
+      - Database models
+      - Business logic
+
+  - id: frontend-engineer
+    name: Frontend Engineer
+    description: UI components, styling
+    wave: 2
+    typical_tasks:
+      - React components
+      - CSS/styling
+      - User interactions
+
+  - id: integration-engineer
+    name: Integration Engineer
+    description: External APIs, services
+    wave: 2
+    typical_tasks:
+      - Third-party APIs
+      - OAuth flows
+      - Webhooks
+
+  - id: qa-engineer
+    name: QA Engineer
+    description: Tests, validation
+    wave: 3
+    typical_tasks:
+      - Unit tests
+      - Integration tests
+      - Edge cases
+
+  - id: integration-lead
+    name: Integration Lead
+    description: Merge, resolve, package
+    wave: 4
+    typical_tasks:
+      - Conflict resolution
+      - Final assembly
+      - Build verification
