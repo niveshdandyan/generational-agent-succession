@@ -1,0 +1,124 @@
+# Transfer Document Template
+# ==========================
+# This document transfers knowledge from parent to child generation
+# Target: 15% compression, max 3000 tokens
+
+meta:
+  parent_generation: 0         # Replace with actual generation number
+  child_generation: 0          # parent_generation + 1
+  timestamp: ""                # ISO timestamp
+  reason: ""                   # What triggered succession
+  compression_ratio: 0.0       # Actual compression achieved
+  confidence_at_handoff: 0.0   # Parent's confidence when handing off
+
+# CRITICAL - Always transfer (Tier 1)
+task_state:
+  objective: ""                # Main goal of the task
+  overall_progress: 0.0        # 0.0 to 1.0
+  current_phase: ""            # What was being worked on
+  remaining_phases: []         # List of remaining subtasks
+  blockers: []                 # Any blocking issues
+
+# IMPORTANT - Transfer with compression (Tier 2)
+completed_work:
+  subtasks:
+    # - name: "Subtask name"
+    #   status: "done"
+    #   files:
+    #     - "path/to/file.js"
+    #   summary: "Brief description of what was done"
+
+  key_decisions:
+    # - decision: "What was decided"
+    #   reason: "Why this decision was made"
+    #   alternatives_considered:
+    #     - "Alternative 1"
+    #     - "Alternative 2"
+    #   files_affected:
+    #     - "path/to/file.js"
+
+working_memory:
+  active_files:
+    # - path: "src/api/posts.js"
+    #   status: "in_progress"        # in_progress, not_started, blocked
+    #   completion: 0.0              # 0.0 to 1.0
+    #   notes: "Context about this file"
+
+  next_steps:
+    # - "Immediate action 1"
+    # - "Immediate action 2"
+
+  environment:
+    # - key: "NODE_VERSION"
+    #   value: "18"
+    # - key: "DATABASE_URL"
+    #   value: "postgres://..."
+
+# CONTEXT - Transfer selectively (Tier 3)
+accumulated_knowledge:
+  success_patterns:
+    # - context: "When this applies"
+    #   pattern: "What to do"
+    #   evidence: "Why it works"
+    #   confidence: 0.0
+
+  anti_patterns:
+    # - context: "When this applies"
+    #   pattern: "What NOT to do"
+    #   impact: "What goes wrong"
+    #   recommendation: "Do this instead"
+
+  domain_insights:
+    # - category: "external_apis"
+    #   insight: "Twitter API rate limits: 300/3hr"
+    #   source: "Documentation"
+
+conversation_summary:
+  user_intent: ""              # What the user ultimately wants
+
+  user_preferences:
+    # - "Prefers TypeScript"
+    # - "Wants comprehensive error messages"
+
+  key_exchanges:
+    # - topic: "Tech stack decision"
+    #   outcome: "Chose Express + PostgreSQL"
+    # - topic: "Auth approach"
+    #   outcome: "JWT with refresh tokens"
+
+  clarifications_received:
+    # - question: "What you asked"
+    #   answer: "What they said"
+
+# EPHEMERAL - Do not transfer (Tier 4)
+# These are NOT included in transfer document:
+# - Raw tool outputs
+# - Verbose logs
+# - Exploration history (file reads that led nowhere)
+# - Failed experiments (unless they became anti-patterns)
+# - Intermediate calculations
+
+---
+# Compression Guidelines
+#
+# 1. PRIORITIZE:
+#    - task_state (always full)
+#    - working_memory.next_steps (always full)
+#    - working_memory.active_files (summarize if many)
+#    - key_decisions (most impactful only)
+#    - success_patterns (highest confidence only)
+#
+# 2. COMPRESS:
+#    - completed_work.subtasks → just names and file lists
+#    - conversation_summary → essential preferences only
+#    - domain_insights → deduplicate and merge
+#
+# 3. OMIT if over token budget:
+#    - Low-confidence patterns
+#    - Redundant domain insights
+#    - Detailed conversation history
+#
+# 4. TOKEN ESTIMATION:
+#    - ~4 chars per token average
+#    - Target: 3000 tokens max
+#    - ~12,000 characters max
