@@ -1,0 +1,8 @@
+# GAS Dashboard Server Dependencies
+# ==================================
+
+# WebSocket server support
+websockets>=10.0
+
+# Async file operations (optional, for improved file I/O performance)
+aiofiles>=0.8.0
