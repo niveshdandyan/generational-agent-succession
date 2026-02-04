@@ -2618,10 +2618,6 @@ def get_agent_status(agent_id: str, agent_config: Dict[str, Any], gas_dir: str) 
     if task_id:
         task_dir = os.getenv('TASK_DIR', '/tmp/claude-1000')
         possible_output_paths.insert(0, os.path.join(task_dir, f'{task_id}.output'))
-        # Also check workspace-specific task directories
-        workspace_task_dirs = glob.glob('/tmp/claude-*/*/tasks')
-        for wtd in workspace_task_dirs:
-            possible_output_paths.append(os.path.join(wtd, f'{task_id}.output'))
 
     for path in possible_output_paths:
         if os.path.exists(path):

@@ -1,7 +1,7 @@
 ---
 name: generational-agent-succession
 description: Parallel agent swarms with generational succession. Combines agent-architect's multi-agent parallelism with automatic succession when agents degrade. Each parallel agent gets fresh context through controlled handoffs while maintaining accumulated wisdom.
-version: 2.0.0
+version: 2.0.1
 author: HappyCapy
 triggers:
   - /gas
@@ -340,6 +340,13 @@ nohup python3 /workspace/${PROJECT_SLUG}-gas/gas-dashboard-server.py 8080 > /tmp
 /app/export-port.sh 8080
 ```
 
+> **CRITICAL**: After exporting the port, **IMMEDIATELY share the dashboard URL with the user**. Do not wait until the end of the task. The user needs to see the live dashboard while agents are working.
+
+Example output to share:
+```
+Dashboard is live at: https://8080-xxx-preview.happycapy.ai
+```
+
 ---
 
 ## Phase 4: Agent Prompt Generation
@@ -544,6 +551,29 @@ def launch_wave(wave_number, agents_in_wave):
         })
 
     return launched
+```
+
+> **CRITICAL: Update gas-state.json with task_id after launching each agent!**
+>
+> The dashboard reads `task_id` from `gas-state.json` to locate output files. Without this update, the dashboard cannot show live activity.
+
+```python
+# REQUIRED: Update gas-state.json after launching each agent
+def update_gas_state_with_task_id(agent_id, task_id):
+    state = read_json('gas-state.json')
+    state['agents'][agent_id]['task_id'] = task_id
+    state['agents'][agent_id]['status'] = 'running'
+    state['agents'][agent_id]['current_generation'] = 1
+    write_json('gas-state.json', state)
+```
+
+Example after launching:
+```python
+# After Task tool returns
+task_result = Task(...)  # Returns agentId like "a4cdd81"
+
+# IMMEDIATELY update gas-state.json
+update_gas_state_with_task_id('agent-1-core', task_result.agent_id)
 ```
 
 ### Step 5.2: Monitor Wave with GAS
@@ -937,6 +967,9 @@ Shared Patterns: 34
 | Knowledge not propagating | Store not shared | Check knowledge store path |
 | Integration conflicts | Overlapping responsibilities | Refine agent boundaries |
 | Dashboard not updating | Wrong GAS_MODE | Set GAS_MODE=swarm |
+| **Dashboard shows "pending"/"Waiting..."** | **task_id not updated in gas-state.json** | **Update gas-state.json with task_id immediately after launching each agent** |
+| Dashboard shows no live activity | Output files not found | Ensure task_id is correct; dashboard scans /tmp/claude-*/*/tasks/ |
+| Agent cards not showing progress | Status files in wrong location | Agents must write status.json to both `agents/X/status.json` AND `agents/X/generations/gen-N/status.json` |
 
 ---
 
